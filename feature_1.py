@@ -8,6 +8,11 @@ from pixelbetweenpoints import pixel_between_two_points
 import os
 import tkinter as tk
 from tkinter import filedialog
+from feature_1_for_threshold_test import threshold_test
+from tqdm import tqdm
+
+
+
 
 
 def step1(read_type):
@@ -18,13 +23,18 @@ def step1(read_type):
     cell_area_hist_list=[]
     print("============Step 1 Start============")
     #-----read-----
-    root = tk.Tk()
-    root.withdraw()
+
     if read_type==0:
-        file_path = filedialog.askopenfilename()
+        file_path=filedialog.askopenfilename()
+
     #img=cv.imread("G:\\2020summer\\Project\\Chromophobe_dataset1\\4.jpg")
     else:
         file_path="G:\\2020summer\\Project\\Oncocytoma_dataset\\output\\"+str(read_type)+".jpg"
+
+
+    #threshold_value=190
+    threshold_value=threshold_test(file_path)
+
 
     if not os.path.exists(os_path+'\\bin\\output'):
         os.makedirs(os_path+'\\bin\\output')
@@ -51,8 +61,8 @@ def step1(read_type):
     gauss = cv.GaussianBlur(gray, (5, 5), 5)
     #cv.imshow("gauss1",gauss)
 
-    ret, thresh = cv.threshold(gauss, 190, 255, 0)
-    cv.imwrite("bin\\figure3_left.jpg",thresh)
+    ret, thresh = cv.threshold(gauss, threshold_value, 255, 0)
+    #cv.imwrite("bin\\figure3_left.jpg",thresh)
     #cv.imshow("thresh",thresh)
 
     erode = cv.erode(thresh, None, iterations=1)
@@ -77,8 +87,9 @@ def step1(read_type):
     area_of_cells_nucleus=[]
     Whole_pic_cell_area_ave_percent=[]
     Whole_pic_cell_color_ave = []
-    for i in range(0, len(cnts)):
-        if 250 <= cnt_area(cnts[i]) <= 0.2*(img.shape[0]*img.shape[1]):
+    for i in tqdm(range(0, len(cnts)),desc='Cell Nucleus Detecting'):
+        x, y, w, h = cv.boundingRect(cnts[i])
+        if 250 <= cnt_area(cnts[i]) <= 0.1*(img.shape[0]*img.shape[1]) and cnt_area(cnts[i])/(w*h)>0.4 :
             cell_area_hist_list.append(cnt_area(cnts[i]))
             #print(cnts[i])
             #cell_area_hist_list.append(area_calculate_from_points(cnts[i]))
@@ -122,7 +133,7 @@ def step1(read_type):
             '''
             #print("this cell area percent= ",str(cell_area_percent/(w*h)))
             numpy.set_printoptions(precision=3)
-            Whole_pic_cell_area_ave_percent.append(cell_area_percent/(w*h))
+            Whole_pic_cell_area_ave_percent.append(cnt_area(cnts[i])/(w*h))
             Whole_pic_cell_color_ave.append(numpy.mean(Single_Cell_Color_Distrution))
             """#找出masked细胞内点的坐标
             rect = cv.minAreaRect(cnts[i])
@@ -166,10 +177,11 @@ def step1(read_type):
                 y_sample=cY
 
             #cv.drawContours(img_masked, [cnts[i]], -1, (255, 255, 255), -1)#mask contours
-    print("Whole pic average cell nucleus area percent: ", Whole_pic_cell_area_ave_percent)
+    print("Whole pic cell nucleus rectango area list: ", Whole_pic_cell_area_ave_percent)
     print("Whole pic average cell nucleus area percent_ave: ", numpy.mean(Whole_pic_cell_area_ave_percent))
     print("Whole pic average cell nucleus color deep percent: ", Whole_pic_cell_color_ave)
-    print("Whole pic average cell nucleus color deep percent_ave: ", numpy.mean(Whole_pic_cell_color_ave))
+    ave_cell_nucleus_color=numpy.mean(Whole_pic_cell_color_ave)
+    print("Whole pic average cell nucleus color deep percent_ave: ", ave_cell_nucleus_color)
 
     cv.imwrite("result\\cell_clean.bmp", img)
     #-----put Text-----
@@ -202,7 +214,7 @@ def step1(read_type):
     cv.circle(img_sample, (x_sample, y_sample), 3, (0, 0, 255), -1)
     font = cv.FONT_HERSHEY_SIMPLEX
     cv.putText(img_sample, "Sample_Point",(x_sample - 20, y_sample - 20),font, 0.7, (255, 255, 255), 2)
-    #cv.imshow("img_sample_location_RED_DOT", img_sample)
+
 
 
     # save to local
@@ -227,7 +239,7 @@ def step1(read_type):
     cv.imwrite("bin\\figure3_right.jpg", img_masked)
     #================hist of cells area==================
     plt.hist(cell_area_hist_list)
-    plt.show()
+    #plt.show()
 
     #=================================
     #-----
@@ -241,8 +253,9 @@ def step1(read_type):
     cv.putText(img_masked, "Cells density : " + str(Cells_density)+" / 100*100 pixels", (80, img.shape[0] - 300),cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
     cv.putText(img_masked, "Close window to continue", (80, img.shape[0]-250), cv.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 1)
     #=================================/UI
-
+    cv.imshow("result", img_masked)
+    #cv.imshow("img_sample_location_RED_DOT", img_sample)
     cv.imwrite("result\\overview_result1.bmp", img_masked)
     print("============Step 1 End============")
-    #cv.waitKey()
-    return counter_number,Cells_density
+    cv.waitKey()
+    return counter_number,Cells_density,ave_cell_nucleus_color

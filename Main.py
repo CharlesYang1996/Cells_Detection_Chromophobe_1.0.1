@@ -12,17 +12,20 @@ from feature_4 import step4
 from feature_4_all import step5
 import numpy as np
 import time
-
+from Bar_system import set_Bar
 from PIL import Image
 import matplotlib.pyplot as plt
 from tkinter import *
 import tkinter.messagebox
 
+
 def main(read_type):
     start_time = time.clock()
     not_circle_rate=[]
     non_circle_rate_list=[]
-    Cells_quantity,Cells_density=step1(read_type)
+
+
+    Cells_quantity,Cells_density,Cell_nucleus_color=step1(read_type)
 
     print(Cells_quantity)
     for i in range(1,Cells_quantity):
@@ -41,15 +44,35 @@ def main(read_type):
             pass
     display=cv.imread("bin\\output\\temp_display.bmp")
     dateandtime=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    stop_time = time.clock()
+    cost = stop_time - start_time
+    V_1=float(Cells_density)
+    V_2=float(Cell_nucleus_color)
+    V_3=float(np.mean(non_circle_rate_list))
+    #Result
+    Result_value=round(-1*(2*((V_1-1)/0.7)+1*((165-V_2)/35)+2*((V_3-0.25)/0.06)),3)
+    #Bar
+    set_Bar(Result_value)
+    x_offset1 = 210
+    y_offset1 = display.shape[0]-390
+    img_bar=cv.imread('result\\bar.png')
+    barx, bary = img_bar.shape[0:2]
+    img_bar1 = cv.resize(img_bar, (int(bary / 2), int(barx / 2)))
+    display[y_offset1:y_offset1 + img_bar1.shape[0], x_offset1:x_offset1 + img_bar1.shape[1]] = img_bar1
+
+    #Text
     cv.putText(display, dateandtime, (80, 60), cv.FONT_HERSHEY_SIMPLEX, 0.5,
                (0, 0, 0), 1)
-    cv.putText(display, "Result Value:"+str(np.mean(non_circle_rate_list)), (80, display.shape[0]-400), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
-    cv.putText(display, "The lower the value, the higher the probability of Chromophobe", (80, display.shape[0]-350), cv.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
+    cv.putText(display, "Result Value:"+str(Result_value), (80, display.shape[0]-400), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
+    cv.putText(display, "Oncocytoma                                      Chromophobe", (80, display.shape[0]-350), cv.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
     cv.putText(display, "Total cells number: "+str(Cells_quantity), (80, display.shape[0]-300), cv.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 1)
     cv.putText(display, "Total cells density: "+str(Cells_density), (80, display.shape[0]-250), cv.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 1)
+    cv.putText(display, "Aveage cell nucleus color depth: " + str(round(Cell_nucleus_color,3)), (80, display.shape[0] - 200),cv.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 1)
+    cv.putText(display, "Non-circle Value:" + str(round(np.mean(non_circle_rate_list),3)), (80, display.shape[0] - 150),cv.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
+    cv.putText(display, "Running time: " + str(cost)+" second", (80, display.shape[0] - 100),cv.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 1)
     r1 = cv.imread("result\\overview_result1.bmp")
     r2 = cv.imread("result\\cell_clean.bmp")
-    cv.imshow("Overview", r1)
+    #cv.imshow("Overview", r1)
     cv.imshow("cell_clean", r2)
     cv.imshow("Final output", display)
     cv.imwrite("result\\Final_Result.bmp", display)
@@ -57,14 +80,13 @@ def main(read_type):
     print("cells density : ", Cells_density)
 
     print("not_circle_rate : ",np.mean(non_circle_rate_list))
-    print(np.mean(non_circle_rate_list))
-    stop_time = time.clock()
-    cost = stop_time - start_time
+
+    print("Cell nucleus color depth : ",Cell_nucleus_color)
     print("%s cost %s second" % (os.path.basename(sys.argv[0]), cost))
 
     plt.hist(non_circle_rate_list,bins=20)
     plt.title('non_circle_rate')
-    plt.show()
+    #plt.show()
     shutil.rmtree("output_single")
     os.mkdir("output_single")
     cv.waitKey()
