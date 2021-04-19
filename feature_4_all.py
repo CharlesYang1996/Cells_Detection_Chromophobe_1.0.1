@@ -116,10 +116,8 @@ def step5(cell_id,total_cells_number,output_not_circle):
     if cell_id<=total_cells_number:
         cv.putText(display,"Chromophobe Kidney Cancer Test", (80, 30), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 1)
 
-        cv.putText(display, "- If the Result Value is less than 0.25, then there is a high probability that the image is Chromophobe.", (80, img.shape[0]-110), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 1)
-        cv.putText(display,
-                   "- If the Total cells density is less than 1, then there is a high probability that the image is Chromophobe.",
-                   (80, img.shape[0] - 70), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 1)
+        #cv.putText(display, "- If the Result Value is less than 0.25, then there is a high probability that the image is Chromophobe.", (80, img.shape[0]-110), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 1)
+        #cv.putText(display,"- If the Total cells density is less than 1, then there is a high probability that the image is Chromophobe.",(80, img.shape[0] - 70), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 1)
         cv.putText(display,
                    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                    (80, img.shape[0] - 30), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 1)
