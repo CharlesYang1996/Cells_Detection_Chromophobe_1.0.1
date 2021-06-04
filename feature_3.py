@@ -1,4 +1,5 @@
-#Create a circle around the nucleus and walk through all the rays coming from the center, looking for the cell wall
+#Create a circle around the nucleus and walk through all the rays coming
+# from the center, looking for the cell wall
 #Xu_Yang 2020.8.11
 
 import math_test
@@ -9,12 +10,11 @@ from pylab import *
 from pixelbetweenpoints import pixel_between_two_points
 def step2(cell_id):
 
-    #print("============Step 2 Start============")
+    # print("============Step 2 Start============")
 
-    img=cv.imread("bin\\temp_1.bmp")
-    img_result=img.copy()
+    img = cv.imread("bin\\temp_1.bmp")
+    img_result = img.copy()
     #img=cv.cvtColor(img,cv.COLOR_BGR2BGRA)
-
 
     #-----preprocess-----
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)

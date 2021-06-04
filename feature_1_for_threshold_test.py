@@ -11,7 +11,7 @@ from tkinter import filedialog
 
 
 
-
+path_output = 'F:\YI RONG\BU\Research-resources\CellDetection\output\\'
 
 
 def step1(file_path,threshold_value):
@@ -62,6 +62,7 @@ def step1(file_path,threshold_value):
     #print("============Loop End============")
     #cv.waitKey()
     return counter_number
+
 def threshold_value_test(start_value,end_value,temp_path):
     threshold_value_list=[i for i in range(start_value,end_value,2)]
     threshold_value_numberofcells_list = []
@@ -97,7 +98,7 @@ def threshold_value_test(start_value,end_value,temp_path):
     plt.axvline(target_x)
 
     print("Suggestion Threshold_value is: ", target_x )
-    plt.savefig('bin\\threshold.png')
+    plt.savefig(path_output + 'threshold.png')
     plt.show()
     return target_x
 
@@ -110,10 +111,13 @@ def threshold_test(temp_path1):
 
     print(result)
     return result
+
 if __name__ == "__main__":
+
+    path = 'F:\YI RONG\BU\Research-resources\CellDetection\Cells_Detection_Chromophobe_1.0.1\test_image'
     def open_method():
 
-        path = 'G:\\2020summer\\Project\\Cell_classfication_1.0.0\\Single_Cell'
+
         for i in os.listdir(path):
             path_file = os.path.join(path, i)
             if os.path.isfile(path_file):
