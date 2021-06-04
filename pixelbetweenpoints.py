@@ -4,6 +4,10 @@ def pixel_between_two_points(x1, x2, y1, y2):
     two_points_list=[]
     x_distance = (x2 - x1)
     y_distance = (y2 - y1)
+
+    if x_distance == 0 and y_distance == 0:
+        return [[x1, y1], [x2, y2]]
+
     a=0
     b=0
     if x_distance>0:

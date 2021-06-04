@@ -6,7 +6,7 @@ import cv2 as cv
 from math_test import *
 from pylab import *
 from pixelbetweenpoints import pixel_between_two_points
-def step5(cell_id,total_cells_number,output_not_circle):
+def step5(cell_id, total_cells_number, output_not_circle):
 
 
 
@@ -112,18 +112,26 @@ def step5(cell_id,total_cells_number,output_not_circle):
         file1 = open('bin\\area_of_nucleus.txt', 'r')
         dataset1 = [float(x.strip()) for x in file1]
         file1.close()
-        #print("The area of cell nucleus is: ",round(dataset1[cell_id-1]))
+        # print("The area of cell nucleus is: ",round(dataset1[cell_id-1]))
     if cell_id<=total_cells_number:
-        cv.putText(display,"Chromophobe Kidney Cancer Test", (80, 30), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 1)
+        cv.putText(display, "Chromophobe Kidney Cancer Test", (80, 30), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
 
-        cv.putText(display, "- If the Result Value is less than 0.25, then there is a high probability that the image is Chromophobe.", (80, img.shape[0]-110), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 1)
         cv.putText(display,
-                   "- If the Total cells density is less than 1, then there is a high probability that the image is Chromophobe.",
-                   (80, img.shape[0] - 70), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 1)
+                   "- If the Result Value is less than 0,",
+                   (80, img.shape[0] - 110), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
+        cv.putText(display,
+                   "then there is a high probability that the image is Chromophobe.",
+                   (80, img.shape[0] - 90), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
+        cv.putText(display,
+                   "- If the non-circle value is less than 0.24,",
+                   (80, img.shape[0] - 70), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
+        cv.putText(display,
+                   "then there is a high probability that the image is Chromophobe.",
+                   (80, img.shape[0] - 50), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
         cv.putText(display,
                    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-                   (80, img.shape[0] - 30), cv.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 1)
+                   (80, img.shape[0] - 30), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
     #cv.imshow("step4 output", display)
 
     cv.imwrite("bin\\output\\temp_display.bmp",display)
-    #cv.waitKey()
+    # cv.waitKey()
